@@ -1,0 +1,119 @@
+# ============================================================
+# Netlify configuration for fedebuilds.com
+# ============================================================
+# Docs: https://docs.netlify.com/configure-builds/file-based-configuration/
+# ============================================================
+
+[build]
+  publish = "."
+
+# ============================================================
+# Security & Performance Headers
+# ============================================================
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Force HTTPS for 2 years, including subdomains, eligible for browser preload list
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+
+    # Block embedding in iframes (anti-clickjacking)
+    X-Frame-Options = "DENY"
+
+    # Prevent browser MIME-sniffing
+    X-Content-Type-Options = "nosniff"
+
+    # Send referrer only on same origin / downgrade-safe
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+    # Disable powerful browser APIs we don't use
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=(), payment=(), usb=(), magnetometer=(), accelerometer=(), gyroscope=()"
+
+    # Content Security Policy
+    # 'unsafe-inline' on script-src is needed because GSAP setup is inline.
+    # If you later move scripts to external files, remove 'unsafe-inline' and use nonce/hash.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; media-src 'self' https:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests;"
+
+    # Cross-origin opener policy
+    Cross-Origin-Opener-Policy = "same-origin"
+
+# ============================================================
+# Long-term caching for static assets
+# Browser caches these for 1 year — speeds up repeat visits
+# ============================================================
+[[headers]]
+  for = "/*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.jpeg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.woff"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.mp4"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.webm"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# HTML should not be cached aggressively (we want updates to be visible)
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# ============================================================
+# Redirects: consolidate www → apex (better for SEO)
+# After you connect the domain in Netlify, this kicks in
+# ============================================================
+[[redirects]]
+  from = "https://www.fedebuilds.com/*"
+  to = "https://fedebuilds.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://fedebuilds.com/*"
+  to = "https://fedebuilds.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.fedebuilds.com/*"
+  to = "https://fedebuilds.com/:splat"
+  status = 301
+  force = true
